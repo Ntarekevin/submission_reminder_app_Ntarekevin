@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #Give the github username
 
 read -p 'Give username: ' username
@@ -12,12 +11,12 @@ mkdir -p $Kevin
 
 #Creating the subdirectories
 
-mkdir -p $Kevin/app $Kevin/modules $Kevin/assets $Kevin/config
+mkdir -p $Kevin/app
 mkdir -p $Kevin/modules
 mkdir -p $Kevin/assets
 mkdir -p $Kevin/config
 
-#Creating the reminder.sh script
+#Creating the reminder.sh script in the app directory
 
 cat << 'EOF' > $Kevin/app/reminder.sh
 
@@ -72,17 +71,19 @@ Anissa, Shell Basics, submitted
 chris, Git, submitted
 lionel, Ict, not submitted
 EOF
+# Creating config.env file in the config directory
 cat << 'EOF' > $Kevin/config/config.env
 
 # This is the config file
 ASSIGNMENT="Shell Navigation"
 DAYS_REMAINING=2
 EOF
+# Creating the startup.sh script
 cat << 'EOF' > Kevin/startup.sh
 #!/bin/bash
 # startup.sh - Starts the submission reminder application when executed
 
-echo "Starting submission reminder application..."
+echo "Student report reminder application..."
 ./$Kevin/app/reminder.sh
 EOF
 
@@ -93,4 +94,4 @@ chmod +x $Kevin/app/reminder.sh
 chmod +x $Kevin/modules/functions.sh
 
 #The exact feedback
-echo 'Reports created'
+echo  "Reports created and files are set up in $Kevin."
