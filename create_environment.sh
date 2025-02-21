@@ -34,7 +34,7 @@ echo "REPORT: $REPORT"
 echo "Time given submit: $TIME_REMAINING days"
 echo "--------------------------------------------"
 
-check_submissions $submissions_file
+Validate_submissions $file
 
 EOF
 cat << 'EOF' > $Kevin/modules/functions.sh
@@ -76,14 +76,14 @@ cat << 'EOF' > $Kevin/config/config.env
 
 # This is the config file
 ASSIGNMENT="Shell Navigation"
-DAYS_REMAINING=2
+TIME_REMAINING=2
 EOF
 # Creating the startup.sh script
 cat << 'EOF' > Kevin/startup.sh
 #!/bin/bash
 # startup.sh - Starts the submission reminder application when executed
 
-echo "Student report reminder application..."
+echo "name report reminder application..."
 ./$Kevin/app/reminder.sh
 EOF
 
@@ -94,4 +94,4 @@ chmod +x $Kevin/app/reminder.sh
 chmod +x $Kevin/modules/functions.sh
 
 #The exact feedback
-echo  "Reports created and files are set up in $Kevin."
+echo  "Alerts created and files are set up in $Kevin."
