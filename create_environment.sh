@@ -31,7 +31,7 @@ submissions_file="./assets/submissions.txt"
 
 # Populate remaining time and run the reminder function
 echo "REPORT: $REPORT"
-echo "Time given submit: $DAYS_REMAINING days"
+echo "Time given submit: $TIME_REMAINING days"
 echo "--------------------------------------------"
 
 check_submissions $submissions_file
@@ -41,24 +41,24 @@ cat << 'EOF' > $Kevin/modules/functions.sh
 #!/bin/bash
 
 # Function to read submissions file and output students who have not submitted
-function check_submissions {
-    local submissions_file=$1
-    echo "Checking reports in $submissions_file"
+function validate_submissions {
+    local file=$1
+    echo "Analyzing student submission data from $file"
 
     # Skip the header and iterate through the lines
     while IFS=, read -r student assignment status; do
-        # Remove leading and trailing whitespace
-        student=$(echo "$student" | xargs)
-        assignment=$(echo "$assignment" | xargs)
+
+        name=$(echo "$name" | xargs)
+        tasks=$(echo "$tasks" | xargs)
         status=$(echo "$status" | xargs)
 
         # Check if assignment matches and status is 'not submitted'
         if [[ "$status" == "not submitted" ]]; then
-            echo "Reminder: $student has not submitted the $assignment assignment!"
+            echo "Alert: $name has not submitted the $task!"
         elif [[ $status" == ""submitted" ]]; then
-            echo "Reminder: $student has submitted the $assignment assignment!"
+            echo "Reminder: $name has submitted the $task!"
         fi
-    done < <(tail -n +2 "$submissions_file") # Skip the header
+    done < <(tail -n +2 "$file") # Skip the header
 }
 
 EOF
@@ -89,7 +89,7 @@ EOF
 
 #This will making all the files executable
 
-chmod +x $Kevin/startup.sh 
+chmod +x $Kevin/startup.sh
 chmod +x $Kevin/app/reminder.sh
 chmod +x $Kevin/modules/functions.sh
 
