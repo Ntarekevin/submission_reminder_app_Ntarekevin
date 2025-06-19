@@ -1,97 +1,100 @@
 #!/bin/bash
-#Give the github username
+# Prompt the user to enter their name
+read -p "Enter your Name: " user_name
 
-read -p 'Give username: ' username
+# Create the main project directory using the provided name
+mkdir -p submission_reminder_$user_name
 
-#Creating the submission_reminder directory
+# Create the necessary subdirectories
+mkdir submission_reminder_$user_name/app \
+      submission_reminder_$user_name/modules \
+      submission_reminder_$user_name/assets \
+      submission_reminder_$user_name/config
 
-Kevin=submission_reminder_$username
+# Create required files inside their respective directories
+touch submission_reminder_$user_name/app/reminder.sh \
+      submission_reminder_$user_name/modules/functions.sh \
+      submission_reminder_$user_name/assets/submissions.txt \
+      submission_reminder_$user_name/config/config.env \
+      submission_reminder_$user_name/startup.sh
 
-mkdir -p $Kevin
+# Populate config.env with environment variables
+cat << 'EOF' > submission_reminder_$user_name/config/config.env
+# Configuration File
+ASSIGNMENT="Shell Navigation"
+DAYS_REMAINING=2
+EOF
 
-#Creating the subdirectories
-
-mkdir -p $Kevin/app
-mkdir -p $Kevin/modules
-mkdir -p $Kevin/assets
-mkdir -p $Kevin/config
-
-#Creating the reminder.sh script in the app directory
-
-cat << 'EOF' > $Kevin/app/reminder.sh
-
+# Populate reminder.sh with logic to source configs and call helper functions
+cat << 'EOF' > submission_reminder_$user_name/app/reminder.sh
 #!/bin/bash
 
 # Source environment variables and helper functions
 source ./config/config.env
 source ./modules/functions.sh
 
-# Way to the submissions file
+# Path to the submissions file
 submissions_file="./assets/submissions.txt"
 
-# Populate remaining time and run the reminder function
-echo "REPORT: $REPORT"
-echo "Time given submit: $TIME_REMAINING days"
+# Display assignment info and check submissions
+echo "Assignment: $ASSIGNMENT"
+echo "Days remaining to submit: $DAYS_REMAINING days"
 echo "--------------------------------------------"
 
-Validate_submissions $file
-
+check_submissions $submissions_file
 EOF
-cat << 'EOF' > $Kevin/modules/functions.sh
+
+# Add the helper function to functions.sh
+cat << 'EOF' > submission_reminder_$user_name/modules/functions.sh
 #!/bin/bash
 
-# Function to read submissions file and output students who have not submitted
-function validate_submissions {
-    local file=$1
-    echo "Analyzing student submission data from $file"
+# Function to identify students who haven’t submitted
+function check_submissions {
+    local submissions_file=$1
+    echo "Checking submissions in $submissions_file"
 
-    # Skip the header and iterate through the lines
+    # Read file line-by-line, skipping the header
     while IFS=, read -r student assignment status; do
-
-        name=$(echo "$name" | xargs)
-        tasks=$(echo "$tasks" | xargs)
+        student=$(echo "$student" | xargs)
+        assignment=$(echo "$assignment" | xargs)
         status=$(echo "$status" | xargs)
 
-        # Check if assignment matches and status is 'not submitted'
-        if [[ "$status" == "not submitted" ]]; then
-            echo "Alert: $name has not submitted the $task!"
-        elif [[ $status" == ""submitted" ]]; then
-            echo "Reminder: $name has submitted the $task!"
+        if [[ "$assignment" == "$ASSIGNMENT" && "$status" == "not submitted" ]]; then
+            echo "Reminder: $student has not submitted the $ASSIGNMENT assignment!"
         fi
-    done < <(tail -n +2 "$file") # Skip the header
+    done < <(tail -n +2 "$submissions_file")
 }
-
 EOF
-cat << 'EOF' > $Kevin/assets/submissions.txt
+
+# Add sample student records to submissions.txt
+cat << 'EOF' > submission_reminder_$user_name/assets/submissions.txt
 student, assignment, submission status
-Chinemerem, Shell Navigation, not submitted
-Chiagoziem, Git, submitted
-Divine, Shell Navigation, not submitted
-Anissa, Shell Basics, submitted
-chris, Git, submitted
-lionel, Ict, not submitted
+Aaliyah, Shell Navigation, not submitted
+Thiery, Git, submitted
+Ntare, Shell Navigation, not submitted
+Rajveer, Shell Basics, submitted
+Gilbert, Shell Navigation, not submitted
+Ange, Git, submitted
+Laura, Shell Navigation, not submitted
+Kevin, Shell Basics, submitted
+Jonathan, Shell Navigation, not submitted
+Cyuma, Git, submitted
+Julien, Shell Navigation, not submitted
+Julia, Shell Basics, submitted
 EOF
-# Creating config.env file in the config directory
-cat << 'EOF' > $Kevin/config/config.env
 
-# This is the config file
-ASSIGNMENT="Shell Navigation"
-TIME_REMAINING=2
-EOF
-# Creating the startup.sh script
-cat << 'EOF' > Kevin/startup.sh
+# Create startup script that runs the app
+cat << 'EOF' > submission_reminder_$user_name/startup.sh
 #!/bin/bash
-# startup.sh - Starts the submission reminder application when executed
-
-echo "name report reminder application..."
-./$Kevin/app/reminder.sh
+# Execute the main reminder script
+./app/reminder.sh
 EOF
 
-#This will making all the files executable
+# Set execute permissions on all scripts
+chmod +x submission_reminder_$user_name/app/reminder.sh \
+         submission_reminder_$user_name/modules/functions.sh \
+         submission_reminder_$user_name/config/config.env \
+         submission_reminder_$user_name/startup.sh
 
-chmod +x $Kevin/startup.sh
-chmod +x $Kevin/app/reminder.sh
-chmod +x $Kevin/modules/functions.sh
-
-#The exact feedback
-echo  "Alerts created and files are set up in $Kevin."
+# Confirm success
+echo "✅ Environment setup complete! Your submission reminder app is ready."
